@@ -305,7 +305,7 @@ config.macos_window_background_blur = 20
 config.window_decorations = "RESIZE"
 config.tab_bar_at_bottom = true
 config.window_frame = {
-    font = wezterm.font('JetBrains Mono', { size = 14 }),
+    font = wezterm.font('FiraCode'),
 }
 
 return config
