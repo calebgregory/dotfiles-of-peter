@@ -11,6 +11,7 @@ function get_appearance()
 end
 
 function scheme_for_appearance(appearance)
+  -- https://wezterm.org/colorschemes/index.html
     if appearance:find 'Dark' then
         return 'Default (dark) (terminal.sexy)' --'Builtin Solarized Dark'
     else
@@ -226,8 +227,8 @@ end
 
 wezterm.on('format-tab-title', format_tab_title)
 
--- Set backtick as leader key
-config.leader = { key = '`', mods = '', timeout_milliseconds = 1000 }
+-- Set ctrl+x as leader key
+config.leader = { key = 'x', mods = 'CTRL', timeout_milliseconds = 1000 }
 
 -- Define keyboard shortcuts that use the leader
 config.keys = {
