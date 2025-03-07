@@ -227,7 +227,6 @@ end
 
 wezterm.on('format-tab-title', format_tab_title)
 
--- Set ctrl+x as leader key
 config.leader = { key = 'x', mods = 'CTRL', timeout_milliseconds = 1000 }
 
 -- Define keyboard shortcuts that use the leader
@@ -296,8 +295,9 @@ config.keys = {
     { key = '9', mods = 'LEADER', action = act.ActivateTab(8) },
     { key = '0', mods = 'LEADER', action = act.ActivateTab(9) },
 
-    -- Make backtick+backtick send a literal backtick
-    { key = '`', mods = 'LEADER', action = act.SendKey { key = '`' } },
+    -- Panes
+    { key = '"', mods = "LEADER", action = wezterm.action.SplitVertical { domain = "CurrentPaneDomain" } },
+    { key = '%', mods = "LEADER", action = wezterm.action.SplitHorizontal { domain = "CurrentPaneDomain" } },
 }
 
 -- Add translucency
