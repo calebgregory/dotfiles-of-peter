@@ -227,6 +227,40 @@ end
 
 wezterm.on('format-tab-title', format_tab_title)
 
+local function get_git_branch(cwd)
+  local git_cmd = { "bash", "-c", "cd " .. cwd .. " && git rev-parse --abbrev-ref HEAD" }
+  local result, stdout, stderr = wezterm.run_child_process(git_cmd)
+  if result then
+    branch_name = stdout:gsub("%s+$", "") -- Trim trailing whitespace
+    return branch_name
+  end
+  return nil
+end
+
+local function update_status(window, pane)
+  local cwd = pane:get_current_working_dir()
+  if cwd then
+    -- Extract the path (handling file:// URIs)
+    cwd = cwd.file_path or cwd
+    local branch = get_git_branch(cwd)
+    if branch then
+      window:set_right_status(
+        wezterm.format({
+          { Foreground = { Color = 'limegreen' } },
+          { Text = branch.." " },
+        })
+      )
+    else
+      window:set_right_status("") -- Clears the status if not in a git repo
+    end
+  else
+    window:set_right_status("")
+  end
+end
+
+-- Hook into the right status update event
+wezterm.on("update-status", update_status)
+
 config.leader = { key = 'x', mods = 'CTRL', timeout_milliseconds = 1000 }
 
 -- Define keyboard shortcuts that use the leader
@@ -298,6 +332,8 @@ config.keys = {
     -- Panes
     { key = '"', mods = "LEADER", action = wezterm.action.SplitVertical { domain = "CurrentPaneDomain" } },
     { key = '%', mods = "LEADER", action = wezterm.action.SplitHorizontal { domain = "CurrentPaneDomain" } },
+    { key = "h", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Prev") },
+    { key = "l", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Next") },
 }
 
 -- Add translucency
@@ -305,8 +341,11 @@ config.window_background_opacity = 0.85
 config.macos_window_background_blur = 20
 config.window_decorations = "RESIZE"
 config.tab_bar_at_bottom = true
+config.status_update_interval = 2500
+-- config.use_fancy_tab_bar = true
 config.window_frame = {
     font = wezterm.font('FiraCode'),
+    font_size = 12,
 }
 
 return config
