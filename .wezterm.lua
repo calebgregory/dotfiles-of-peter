@@ -337,7 +337,7 @@ config.keys = {
 }
 
 -- Add translucency
-config.window_background_opacity = 0.85
+config.window_background_opacity = 0.98
 config.macos_window_background_blur = 20
 config.window_decorations = "RESIZE"
 config.tab_bar_at_bottom = true
