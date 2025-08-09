@@ -334,6 +334,8 @@ config.keys = {
     { key = '%', mods = "LEADER", action = wezterm.action.SplitHorizontal { domain = "CurrentPaneDomain" } },
     { key = "h", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Prev") },
     { key = "l", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Next") },
+
+    { key = ' ', mods = 'LEADER', action = act.ActivateCopyMode },
 }
 
 -- Add translucency
