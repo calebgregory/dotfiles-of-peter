@@ -15,7 +15,7 @@ function scheme_for_appearance(appearance)
     if appearance:find 'Dark' then
         return 'Gruvbox dark, medium (base16)' -- 'Default (dark) (terminal.sexy)' --'Builtin Solarized Dark'
     else
-        return 'Gruvbox light, medium (base16)'
+        return 'Solarized (light) (terminal.sexy)' -- 'Gruvbox light, medium (base16)'
     end
 end
 
