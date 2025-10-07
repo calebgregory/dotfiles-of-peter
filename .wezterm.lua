@@ -13,9 +13,9 @@ end
 function scheme_for_appearance(appearance)
   -- https://wezterm.org/colorschemes/index.html
     if appearance:find 'Dark' then
-        return 'Default (dark) (terminal.sexy)' --'Builtin Solarized Dark'
+        return 'Gruvbox dark, medium (base16)' -- 'Default (dark) (terminal.sexy)' --'Builtin Solarized Dark'
     else
-        return 'Ef-Spring'
+        return 'Gruvbox light, medium (base16)'
     end
 end
 
