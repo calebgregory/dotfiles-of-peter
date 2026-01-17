@@ -350,4 +350,7 @@ config.window_frame = {
     font_size = 12,
 }
 
+-- why does a bell sound when you hit tab to see file-suggestions?
+config.audible_bell = "Disabled"
+
 return config
