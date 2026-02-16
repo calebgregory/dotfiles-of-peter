@@ -261,6 +261,37 @@ end
 -- Hook into the right status update event
 wezterm.on("update-status", update_status)
 
+-- lemonaid integration
+wezterm.on('user-var-changed', function(window, pane, name, value)
+  if name == "switch_workspace_and_pane" then
+    local sep = value:find("|")
+    if sep then
+      local workspace = value:sub(1, sep - 1)
+      local target_pane_id = tonumber(value:sub(sep + 1))
+
+      window:perform_action(
+        wezterm.action_callback(function(win, p)
+          win:perform_action(act.SwitchToWorkspace { name = workspace }, p)
+
+          local mux = wezterm.mux
+          for _, mux_win in ipairs(mux.all_windows()) do
+            for _, tab in ipairs(mux_win:tabs()) do
+              for _, tab_pane in ipairs(tab:panes()) do
+                if tab_pane:pane_id() == target_pane_id then
+                  tab:activate()
+                  tab_pane:activate()
+                  return
+                end
+              end
+            end
+          end
+        end),
+        pane
+      )
+    end
+  end
+end)
+
 config.leader = { key = 'x', mods = 'CTRL', timeout_milliseconds = 1000 }
 
 -- Define keyboard shortcuts that use the leader
@@ -336,6 +367,35 @@ config.keys = {
     { key = "l", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Next") },
 
     { key = ' ', mods = 'LEADER', action = act.ActivateCopyMode },
+
+    -- lemonaid integration
+    { key = 'p', mods = 'LEADER', action = wezterm.action_callback(function(window, pane)
+        -- Call lemonaid to swap: saves current location, returns target
+        local lemonaid = os.getenv("HOME") .. "/.local/bin/lemonaid"
+        local current_ws = wezterm.mux.get_active_workspace()
+        local current_pane = pane:pane_id()
+        local handle = io.popen(lemonaid .. " wezterm swap '" .. current_ws .. "' " .. tostring(current_pane))
+        if not handle then return end
+        local result = handle:read("*a"):gsub("%s+$", "")
+        handle:close()
+
+        -- Parse "workspace|pane_id" output
+        local sep = result:find("|")
+        if not sep then return end
+        local target_ws = result:sub(1, sep - 1)
+        local target_pane = tonumber(result:sub(sep + 1))
+        if not target_ws or not target_pane then return end
+
+        -- Switch to target workspace and pane
+        window:perform_action(act.SwitchToWorkspace { name = target_ws }, pane)
+        for _, w in ipairs(wezterm.mux.all_windows()) do
+            for _, t in ipairs(w:tabs()) do
+                for _, p in ipairs(t:panes()) do
+                    if p:pane_id() == target_pane then t:activate(); p:activate(); return end
+                end
+            end
+        end
+    end) }
 }
 
 -- Add translucency
