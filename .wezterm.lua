@@ -4,9 +4,9 @@ local act = wezterm.action
 
 
 function get_appearance()
-    if wezterm.gui then
-        return wezterm.gui.get_appearance()
-    end
+    -- if wezterm.gui then
+    --     return wezterm.gui.get_appearance()
+    -- end
     return 'Dark'
 end
 
